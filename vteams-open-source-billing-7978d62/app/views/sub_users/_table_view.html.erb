@@ -1,0 +1,45 @@
+<% if @sub_users.count > 0 %>
+    <div class="new-invoice-holder">
+      <div class="new-invoice-table-holder main-invoice page-box">
+        <table class="bordered grid-view">
+          <thead>
+          <tr>
+            <th><%= t('views.common.name') %></th>
+            <th width="35%"><%= t('views.common.email') %></th>
+            <th><%= t('views.common.date') %></th>
+            <th><%= t('role') %></th>
+            <th class="center-align"><%= t('helpers.actions') %></th>
+          </tr>
+          </thead>
+          <tbody class="table-view-body">
+          <% @sub_users.each do |user| %>
+              <tr>
+                <td>
+                  <strong><%= link_to user.name.present? ? user.name : 'N/A' , OSB::CONFIG::DEMO_MODE ? 'javascript:void(0);' : edit_sub_user_path(user), remote: true, class: "invoice_show_link #{'demo-mode' if OSB::CONFIG::DEMO_MODE}" %></strong>
+                </td>
+                <td><%= user.email.present? ? user.email : 'N/A' %></td>
+                <td><%= user.created_at.strftime(get_date_format) %></td>
+                  <td><%= (user.role.present? && user.role.name.present?) ? user.role.name : 'N/A' %></td>
+                <td class="action-btn-group">
+                  <a id="dLabel" class='dropdown-button' href='#' data-activates='dropdown_<%= user.id %>' data-alignment="right" data-beloworigin="true">
+                    <i class="material-icons">more_vert</i>
+                  </a>
+                  <ul id="dropdown_<%= user.id %>" class="dropdown-content z-depth-4">
+                    <li><%= link_to raw("<i class='material-icons'>create</i> Edit"), OSB::CONFIG::DEMO_MODE ? 'javascript:void(0);' : edit_sub_user_path(user), remote: true,
+                                class: "edit_invoice_icon #{'demo-mode' if OSB::CONFIG::DEMO_MODE}", title: t('helpers.links.edit') %></li>
+                    <% if current_user != user %>
+                      <li><%= link_to raw("<i class='material-icons'>delete</i> Delete"), OSB::CONFIG::DEMO_MODE ? 'javascript:void(0):' : sub_user_path(user), method: :delete,
+                                  data: {confirm: t('helpers.messages.confirm'),
+                                         success: t('views.users.bulk_delete')},
+                                  class: "edit_invoice_icon #{'demo-mode' if OSB::CONFIG::DEMO_MODE}", title: t('helpers.links.edit') %></li>
+                    <% end %>
+                  </ul>
+
+                </td>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+<% end %>
